@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>BookHub Theme + Plugin Guide</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+	<script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
+	<style>
+		@media print {
+			.no-print { display: none !important; }
+			body { color: #000; }
+		}
+		body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+	</style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+	<main class="max-w-5xl mx-auto px-6 py-10">
+		<header class="mb-8">
+			<h1 class="text-3xl font-semibold tracking-tight">BookHub – Developer & Admin Guide</h1>
+			<p class="mt-2 text-gray-600">Overview of the custom WordPress theme, Book post type plugin, file responsibilities, and how they connect.</p>
+			<div class="mt-4 no-print">
+				<button onclick="window.print()" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white text-sm font-medium hover:bg-blue-700">Print / Save as PDF</button>
+			</div>
+		</header>
+
+		<section class="mb-10">
+			<h2 class="text-xl font-semibold">1. What’s included</h2>
+			<ul class="mt-3 list-disc pl-6 space-y-1">
+				<li><code>wp-content/plugins/bookhub-library/bookhub-library.php</code>: Registers <strong>Book</strong> post type and taxonomies (<strong>Genre</strong>, <strong>Author</strong>), adds meta fields (Year, Rating, ISBN), and a simple block.</li>
+				<li><code>wp-content/themes/bookhub/functions.php</code>: Enables title tags, thumbnails, Tailwind CDN, registers the <strong>Primary Menu</strong>, and the <strong>Primary Sidebar</strong>.</li>
+				<li><code>wp-content/themes/bookhub/header.php</code> / <code>footer.php</code>: Responsive layout, mobile menu, site search.</li>
+				<li><code>wp-content/themes/bookhub/front-page.php</code>: Homepage hero, Top Rated Books, Latest Arrivals.</li>
+				<li><code>wp-content/themes/bookhub/home.php</code>: Posts index when using “Your latest posts”.</li>
+				<li><code>wp-content/themes/bookhub/index.php</code>: Fallback listing for posts.</li>
+				<li><code>wp-content/themes/bookhub/archive-book.php</code>: Book archive with filters and grid cards.</li>
+				<li><code>wp-content/themes/bookhub/single-book.php</code>: Book details with related books by Genre.</li>
+				<li><code>wp-content/themes/bookhub/taxonomy-genre.php</code> / <code>taxonomy-author.php</code>: Taxonomy listings.</li>
+				<li><code>wp-content/themes/bookhub/search.php</code> / <code>searchform.php</code>: Site-wide search and form styles.</li>
+			</ul>
+		</section>
+
+		<section class="mb-10">
+			<h2 class="text-xl font-semibold">2. How it fits together</h2>
+			<div class="mt-4 p-4 bg-white border border-gray-200 rounded-lg overflow-x-auto">
+				<div class="mermaid">
+graph TD
+  A[Visitor Request] -->|Front page| B(front-page.php)
+  A -->|Blog index| C(home.php)
+  A -->|Single post/page| D(index.php)
+  A -->|Books archive| E(archive-book.php)
+  A -->|Single book| F(singular: single-book.php)
+  A -->|Genre archive| G(taxonomy-genre.php)
+  A -->|Author archive| H(taxonomy-author.php)
+  B --> I[header.php]
+  C --> I
+  D --> I
+  E --> I
+  F --> I
+  G --> I
+  H --> I
+  I --> J[footer.php]
+  subgraph Theme
+    I
+    J
+    B
+    C
+    D
+    E
+    F
+    G
+    H
+    K[functions.php]
+  end
+  subgraph Plugin: bookhub-library
+    L[bookhub-library.php]
+  end
+  K --> L
+  L -. registers .-> M[(CPT: book)]
+  L -. registers .-> N[(Taxonomies: genre, author)]
+  E --> M
+  F --> M
+  G --> N
+  H --> N
+				</div>
+			</div>
+			<p class="mt-3 text-sm text-gray-600">WordPress resolves templates per request via its Template Hierarchy, then includes <code>header.php</code> and <code>footer.php</code>. The plugin exposes content types that the theme renders.</p>
+		</section>
+
+		<section class="mb-10">
+			<h2 class="text-xl font-semibold">3. Setup checklist</h2>
+			<ol class="mt-3 list-decimal pl-6 space-y-2">
+				<li>Activate plugin: <em>BookHub Library</em> (adds Books, Genres, Authors).</li>
+				<li>Menus: Create a menu and assign to <strong>Primary Menu</strong>.</li>
+				<li>Homepage: Either set a page as static homepage (uses <code>front-page.php</code>) or keep “Your latest posts” (uses <code>home.php</code>).</li>
+				<li>Add Books with cover images, rating, year, ISBN, and assign Genres/Authors.</li>
+				<li>Optional: Add widgets to <strong>Primary Sidebar</strong>.</li>
+			</ol>
+		</section>
+
+		<section class="mb-10">
+			<h2 class="text-xl font-semibold">4. Customization points</h2>
+			<ul class="mt-3 list-disc pl-6 space-y-2">
+				<li><strong>Branding</strong>: In <code>header.php</code>, update the logo badge and site title. Tailwind brand color is configured inline in <code>functions.php</code> via <code>wp_add_inline_script('tailwind-cdn', ...)</code>.</li>
+				<li><strong>Cards/Layouts</strong>: Grid/card styles are Tailwind utility classes; adjust directly in templates.</li>
+				<li><strong>Queries</strong>: Featured and Latest sections in <code>front-page.php</code> use <code>WP_Query</code>. Modify <code>posts_per_page</code>, sorting, or add filters.</li>
+				<li><strong>Related Books</strong>: Logic in <code>single-book.php</code> uses shared Genres. Change to Authors or Rating as needed.</li>
+				<li><strong>Search</strong>: <code>search.php</code> renders mixed results. Limit to books by passing <code>post_type=book</code> in URLs or customizing the query.</li>
+			</ul>
+		</section>
+
+		<section class="mb-10">
+			<h2 class="text-xl font-semibold">5. File map</h2>
+			<table class="mt-3 w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+				<thead class="bg-gray-100">
+					<tr>
+						<th class="text-left p-3 border-b">Path</th>
+						<th class="text-left p-3 border-b">Purpose</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/functions.php</code></td><td class="p-3 border-b">Theme setup, assets, menus, sidebar</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/header.php</code></td><td class="p-3 border-b">Header, nav, search, mobile menu</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/footer.php</code></td><td class="p-3 border-b">Footer layout</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/front-page.php</code></td><td class="p-3 border-b">Homepage hero + featured/latest books</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/home.php</code></td><td class="p-3 border-b">Blog index when latest posts</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/index.php</code></td><td class="p-3 border-b">Generic loop fallback</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/archive-book.php</code></td><td class="p-3 border-b">Books grid archive</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/single-book.php</code></td><td class="p-3 border-b">Single book details + related</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/taxonomy-genre.php</code></td><td class="p-3 border-b">Genre archive</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/taxonomy-author.php</code></td><td class="p-3 border-b">Author archive</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/search.php</code></td><td class="p-3 border-b">Search results</td></tr>
+					<tr><td class="p-3 border-b"><code>themes/bookhub/searchform.php</code></td><td class="p-3 border-b">Reusable search form</td></tr>
+					<tr><td class="p-3 border-b"><code>plugins/bookhub-library/bookhub-library.php</code></td><td class="p-3 border-b">CPT, taxonomies, meta, block</td></tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section>
+			<h2 class="text-xl font-semibold">6. Printing to PDF</h2>
+			<ol class="mt-3 list-decimal pl-6 space-y-2">
+				<li>Open this file in your browser: <code>http://localhost/bookhub/docs/bookhub-guide.html</code></li>
+				<li>Press Ctrl/Cmd+P → Destination: Save as PDF → Save.</li>
+			</ol>
+		</section>
+	</main>
+</body>
+</html>
+
+

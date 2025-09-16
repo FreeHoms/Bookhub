@@ -1,16 +1,37 @@
-   # In your bookhub folder, create .gitignore
-   wp-admin/
-   wp-includes/
-   wp-*.php
-   xmlrpc.php
-   index.php
-   license.txt
-   readme.html
-   wp-config.php
-   wp-config-sample.php
-   wp-content/uploads/
-   wp-content/cache/
-   wp-content/upgrade/
-   wp-content/plugins/bookhub-library/blocks/node_modules/
-   *.log
-   error_log
+# WordPress core files
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/xmlrpc.php
+/index.php
+/license.txt
+/readme.html
+/wp-config.php
+/wp-config-sample.php
+
+# WordPress content
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+
+# Plugin dependencies
+/wp-content/plugins/bookhub-library/blocks/node_modules/
+
+# Log files
+*.log
+error_log
+
+# System files
+.htaccess
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
