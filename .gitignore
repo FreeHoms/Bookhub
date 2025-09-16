@@ -1,0 +1,16 @@
+   # In your bookhub folder, create .gitignore
+   wp-admin/
+   wp-includes/
+   wp-*.php
+   xmlrpc.php
+   index.php
+   license.txt
+   readme.html
+   wp-config.php
+   wp-config-sample.php
+   wp-content/uploads/
+   wp-content/cache/
+   wp-content/upgrade/
+   wp-content/plugins/bookhub-library/blocks/node_modules/
+   *.log
+   error_log
